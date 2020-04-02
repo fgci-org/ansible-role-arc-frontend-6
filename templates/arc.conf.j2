@@ -119,12 +119,5 @@ architecture=adotf
 opsys=CentOS
 nodecpu={{arc_frontend_cluster_nodecpu}}
 
-arc_frontend_queue_grid: |
- [queue:grid]
- comment=Grid queue
- 
- benchmark="SPECFP2000 {{arc_frontend_sfp}}"
- benchmark="SPECINT2000  {{arc_frontend_si00}}"
- benchmark="HEPSPEC2006 {{arc_frontend_hs06}}"
-
+{{ arc_frontend_queue_grid }}
 
