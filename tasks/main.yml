@@ -18,7 +18,7 @@
 - name: install nordugrid rpm key
   rpm_key: key=https://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6 state=present
 
-- name: update all the things
+- name: Upgrade all packages
   yum: name=* state=latest
 
 - name: install Nordugrid ARC packages

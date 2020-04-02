@@ -8,7 +8,7 @@ arc_frontend_packages:
  - nordugrid-arc-archery-manage
  - nordugrid-arc-arex
  - nordugrid-arc-gridftpd
- - nordugrid-arc-gridmap
+ - nordugrid-arc-nordugridmap
  - nordugrid-arc-infosys-ldap
  - nordugrid-arc-hed
  - python2-nordugrid-arc
