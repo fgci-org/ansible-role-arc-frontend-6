@@ -83,7 +83,7 @@ arc_frontend_fairshare:
         - { group: 'ops', share: '100000' }
 
 arc_frontend_queue_grid: |
- [queue/grid]
+ [queue:grid]
  comment=Grid queue
 
  benchmark="SPECFP2000 {{arc_frontend_sfp}}"
