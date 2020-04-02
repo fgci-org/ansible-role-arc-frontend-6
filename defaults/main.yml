@@ -56,7 +56,7 @@ maxjobs: "10000 10000 80 -1 -1"
 arexwakeupperiod: "30"
 defaultttl: "604800 1209600"
 
-#statecallout: "FINISHED timeout=30,onfailure=pass"
+statecallout: "FINISHED timeout=30,onfailure=pass"
 arexmaxtransfertries: 10
 
 unixgroup_dir_ops: "/etc/grid-security/opspool"
