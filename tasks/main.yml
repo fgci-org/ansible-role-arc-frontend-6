@@ -208,7 +208,6 @@
 
 - name: Template arc.conf file
   template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
-  notify: restart_arc_frontend_services
 
 - name: Stop ARC6 services
   service:
