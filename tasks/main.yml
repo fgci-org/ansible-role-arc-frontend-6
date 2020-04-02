@@ -10,7 +10,7 @@
 - name: Remove ARC5 key
   rpm_key:
     state: absent
-    key: 41c00d89
+    key: 240a5db2
 
 - name: install nordugrid repo
   yum: pkg=https://download.nordugrid.org/packages/nordugrid-release/releases/6/centos/el7/x86_64/nordugrid-release-6-1.el7.noarch.rpm
