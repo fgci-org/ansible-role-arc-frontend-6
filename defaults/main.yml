@@ -1,0 +1,92 @@
+---
+# defaults file for ansible-role-arc-frontend
+
+arc_frontend_release: "6"
+
+arc_frontend_packages-6:
+ - nordugrid-arc
+ - nordugrid-arc-archery-manage
+ - nordugrid-arc-arex
+ - nordugrid-arc-gridftpd
+ - nordugrid-arc-gridmap
+ - nordugrid-arc-infosys-ldap
+ - nordugrid-arc-hed
+ - python2-nordugrid-arc
+ - python36-nordugrid-arc
+ - nordugrid-arc-plugins-globus
+ - fetch-crl
+
+arc_frontend_services:
+ - arc-arex
+ - arc-gridftpd
+
+arc_frontend_disabled_services:
+
+# Update NIS on install
+arc_frontend_nis: false
+
+# # Create Slurm Accounts | This only works if init_griduser_accts is set as true as well, see bellow |
+add_slurm_accts: false
+
+# # Create Grid user accounts, homes and groups 
+init_griduser_accts: false
+
+globus_tcp_port_range: "20000,25000"
+globus_udp_port_range: "20000,25000"
+
+slurm_wakeupperiod: "60"
+
+x509_user_key: "/etc/grid-security/hostkey.pem"
+x509_user_cert: "/etc/grid-security/hostcert.pem"
+x509_cert_dir: "/etc/grid-security/certificates"
+
+arc_frontend_griddir: "/scratch/grid"
+arc_frontend_sessiondir: "{{ arc_frontend_griddir }}/sessiondir"
+arc_frontend_runtimedir: "{{ arc_frontend_griddir }}/runtime"
+arc_frontend_runtimedir_cvmfs: "/cvmfs/fgi.csc.fi/runtimes/el7"
+
+shared_scratch: "/scratch"
+shared_filesystem: "yes"
+
+arc_frontend_cachedir: "/scratch/cache"
+cachesize: "80 70"
+cachelifetime: "60d"
+
+maxjobs: "10000 10000 80 -1 -1"
+arexwakeupperiod: "30"
+defaultttl: "604800 1209600"
+
+#statecallout: "FINISHED timeout=30,onfailure=pass"
+arexmaxtransfertries=10
+
+unixgroup_dir_ops: "/etc/grid-security/opspool"
+unixgroup_dir_fgi: "/etc/grid-security/fgipool"
+
+ops_acct_nr: 40
+fgi_acct_nr: 200
+
+arc_frontend_si00: "3940"
+arc_frontend_cores: "12"
+arc_frontend_hs06: "15.8"
+arc_frontend_sfp: "333"
+arc_frontend_jobreport_options: "urbatch:100,archiving:/var/spool/nordugrid/jura,topic:/queue/global.accounting.cpu.central,gocdb_name:{{ gocDBName }},benchmark_type:HEPSPEC,benchmark_value:{{ arc_frontend_hs06 }},benchmark_description:HS06,use_ssl:true,vomsless_vo:{{ voName }}"
+arc_frontend_processor_other_description: "Cores={{ arc_frontend_cores }},Benchmark={{ arc_frontend_hs06 }}-HEP-SPEC06"
+
+arc_frontend_cluster_defaultmemory: "1024"
+
+arc_frontend_cluster_nodecpu: "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz"
+
+arc_frontend_enable_fairshare: True
+arc_frontend_fairshare:
+        - { group: 'local', share: '80000' }
+        - { group: 'fgi', share: '20000' }
+        - { group: 'ops', share: '100000' }
+
+arc_frontend_queue_grid: |
+ [queue/grid]
+ comment=Grid queue
+
+ benchmark="SPECFP2000 {{arc_frontend_sfp}}"
+ benchmark="SPECINT2000  {{arc_frontend_si00}}"
+ benchmark="HEPSPEC2006 {{arc_frontend_hs06}}"
+

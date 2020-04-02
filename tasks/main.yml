@@ -1,0 +1,227 @@
+---
+# tasks file for ansible-role-arc-frontend
+
+#- name: copy nordugrid.repo file
+#  template: src=nordugrid.repo.j2 dest=/etc/yum.repos.d/nordugrid.repo owner=root mode=0644 
+#
+- name: install nordugrid repo
+  yum: https://download.nordugrid.org/packages/nordugrid-release/releases/6/centos/el7/x86_64/nordugrid-release-6-1.el7.noarch.rpm
+
+- name: install nordugrid rpm key
+  rpm_key: key=http://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6 state=present
+
+- name: update all the things
+  yum: name=* state=latest
+
+- name: install Nordugrid ARC packages
+  yum: name={{ arc_frontend_packages | default({}) }} state=present
+
+- name: check if there's a nordugrid.repo.rpmnew
+  stat: path=/etc/yum.repos.d/nordugrid.repo.rpmnew
+  register: arc_frontend_rpmnew_stat
+
+- name: Replace old nordugrid.repo
+  command: mv /etc/yum.repos.d/nordugrid.repo.rpmnew /etc/yum.repos.d/nordugrid.repo
+  when: arc_frontend_rpmnew_stat.stat.exists
+
+- name: assert that a few variables are defined
+  assert:
+    that: "{{item}} is defined"
+    msg: "{{item}} variable must be defined"
+  with_items:
+   - "arc_frontend_griddir"
+   - "arc_frontend_sessiondir"
+   - "arc_frontend_runtimedir"
+   - "arc_frontend_cachedir"
+
+- name: Create Grid dir 
+  file: path={{ arc_frontend_griddir }} state=directory owner=root mode=0755
+
+- name: Create Session dir 
+  file: path={{ arc_frontend_sessiondir }} state=directory owner=nobody group=nobody mode=0755
+
+- name: Create Runtime dir 
+  file: path={{ arc_frontend_runtimedir }} state=directory owner=root mode=0755
+
+- name: Create Cache dir 
+  file: path={{ arc_frontend_cachedir }} state=directory owner=root mode=0755
+
+- name: Create UnixGroup for OPS dir 
+  file: path={{ unixgroup_dir_ops }} state=directory owner=root mode=0755
+  when: init_griduser_accts|bool
+
+- name: Populate ops pool file
+  lineinfile: dest="{{ unixgroup_dir_ops }}/pool" line={{ item }} create=yes state=present
+  with_sequence: start=0 end={{ ops_acct_nr }} format=ops%03d
+  when: init_griduser_accts|bool
+
+- name: Populate fgi pool file
+  lineinfile: dest="{{ unixgroup_dir_fgi }}/pool" line={{ item }} create=yes state=present
+  with_sequence: start=0 end={{ fgi_acct_nr }} format=fgi%03d
+  when: init_griduser_accts|bool
+
+- name: Create UnixGroup for FGI dir 
+  file: path={{ unixgroup_dir_fgi }} state=directory owner=root mode=0755
+  when: init_griduser_accts|bool
+
+
+
+
+
+
+
+
+
+- name: Create gridops group
+  group: name=ops state=present
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+- name: Create gridfgi group
+  group: name=fgi state=present
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+# Ops users do not need write access for home
+- name: Create OPS home dir 
+  file: path="{{arc_frontend_griddir}}/ops" state=directory owner=root mode=0755
+  when: init_griduser_accts|bool
+
+# Fgi users do not need write access for home
+- name: Create FGI home dir 
+  file: path="{{arc_frontend_griddir}}/fgi" state=directory owner=root mode=0755
+  when: init_griduser_accts|bool
+
+- name: Create generic gridnull user
+  user: name=gridnull state=present home="{{arc_frontend_griddir}}/gridnull"
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+- name: Make sure gridnull home dir exists
+  file: path="{{arc_frontend_griddir}}/gridnull" state=directory owner=gridnull group=gridnull mode=0700
+  delegate_to: install
+  when: init_griduser_accts|bool
+  ignore_errors: true
+
+- name: Create generic grid user
+  user: name=grid state=present home="{{arc_frontend_griddir}}/grid"
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+- name: Create Grid users for OPS
+  user: name={{item}} state=present home="{{arc_frontend_griddir}}/ops" groups=ops createhome=no
+  with_sequence: start=0 end={{ops_acct_nr}} format=ops%03d
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+- name: Create Grid users for FGI
+  user: name={{item}} state=present home="{{arc_frontend_griddir}}/fgi" groups=fgi createhome=no
+  with_sequence: start=0 end={{fgi_acct_nr}} format=fgi%03d
+  delegate_to: install
+  when: init_griduser_accts|bool
+
+- name: Update NIS DB
+  command: /usr/bin/make -C /var/yp
+  delegate_to: install
+  when: arc_frontend_nis|bool
+
+- name: Create Slurm user account for OPS 1/2
+  command: /usr/bin/sacctmgr -i add account ops
+  delegate_to: install
+  when: add_slurm_accts|bool and init_griduser_accts|bool
+  ignore_errors: yes
+
+- name: Create Slurm user account for OPS 2/2
+  command: /usr/bin/sacctmgr -i add user name={{ item }} account=ops
+  with_sequence: start=0 end={{ops_acct_nr}} format=ops%03d
+  delegate_to: install
+  when: add_slurm_accts|bool and init_griduser_accts|bool
+  ignore_errors: yes
+
+- name: Create Slurm user account for FGI 1/2
+  command: /usr/bin/sacctmgr -i add account fgi
+  delegate_to: install
+  when: add_slurm_accts|bool and init_griduser_accts|bool
+  ignore_errors: yes
+
+- name: Create Slurm user account for FGI 2/2
+  command: /usr/bin/sacctmgr -i add user name={{item}} account=fgi
+  with_sequence: start=0 end={{fgi_acct_nr}} format=fgi%03d
+  delegate_to: install
+  when: add_slurm_accts|bool and init_griduser_accts|bool
+  ignore_errors: yes
+
+# Slurm Fairshare. This sould go to Slurm role in the future. 
+
+- name: Setting Slurm Fairshare
+  command: /usr/bin/sacctmgr -i modify account name={{item.group}} set fairshare={{item.share}}
+  with_items: "{{arc_frontend_fairshare}}"
+  delegate_to: install
+  when: arc_frontend_enable_fairshare|bool
+
+- name: checks hostkey.pem exists on files/certificates/
+  stat: path=files/certificates/hostkey.pem
+  register: hostkey
+  delegate_to: 127.0.0.1
+  become: false
+
+- name: checks hostcert.pem exists on files/certificates/
+  stat: path=files/certificates/hostcert.pem
+  register: hostcert
+  delegate_to: 127.0.0.1
+  become: false
+
+- name: copy host certificate key file
+  copy: src=files/certificates/hostkey.pem dest=/etc/grid-security/ owner=root mode=0400
+  when: hostkey.stat.exists
+  notify: restart_arc_frontend_services
+
+- name: copy host certificate file
+  copy: src=files/certificates/hostcert.pem dest=/etc/grid-security/ owner=root mode=0644
+  when: hostcert.stat.exists
+  notify: restart_arc_frontend_services
+
+- name: verify certificate and hostkey
+  script: files/verify_certificate
+  changed_when: False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- name: Template arc.conf file
+  template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
+  notify: restart_arc_frontend_services
+
+- name: Stop ARC6 services
+  service:
+    name: "{{item}}"
+    state: stopped
+  with_items: "{{arc_frontend_services}}"
+  when: arc_frontend_services.0 != ""
+
+- name: Start and enable ARC6 frontend services
+  service: name={{item}} state=started enabled=yes
+  with_items: "{{arc_frontend_services}}"
+  when: arc_frontend_services.0 != ""
+
+- name: Disable specific ARC6 frontend services if configured
+  service: name={{ item }} enabled=no
+  with_items: "{{ arc_frontend_disabled_services | default({}) }}"
+  when: arc_frontend_disabled_services.0 != ""
+
+- name: Create cron job that copies runtime apps from CVMFS
+  cron: name="ansible-role-arc-frontend-6 copy runtime" minute=0 hour=6
+        user="root" job="/usr/bin/rsync -a --delete {{arc_frontend_runtimedir_cvmfs}}/ {{arc_frontend_runtimedir}}"
+        cron_file=ansible_copyRuntime
+  when: arc_frontend_runtimedir_cvmfs.0 != "" and arc_frontend_runtimedir != ""
+

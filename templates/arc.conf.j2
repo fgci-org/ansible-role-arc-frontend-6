@@ -1,0 +1,130 @@
+# This file is managed by ansible
+
+[common]
+hostname={{fqdn}}
+voms_processing=strict
+
+[authgroup:ops]
+voms = ops * * *
+
+[authgroup:fgi]
+voms = fgi.csc.fi * * *
+
+[authgroup:allusers]
+authgroup=ops
+authgroup=fgi
+
+[mapping]
+map_to_pool= ops /etc/grid-security/opspool
+map_to_pool= fgi /etc/grid-security/fgipool
+
+map_to_user = ops gridnull:gridnull
+map_to_user = fgi gridnull:gridnull
+
+[lrms]
+lrms=SLURM
+slurm_wakeupperiod={{slurm_wakeupperiod}}
+defaultmemory={{arc_frontend_cluster_defaultmemory}}
+
+[arex]
+controldir={{controldir}}
+sessiondir={{arc_frontend_sessiondir}}
+runtimedir={{arc_frontend_runtimedir}}
+shared_scratch={{shared_scratch}}
+shared_filesystem=yes
+
+maxjobs={{maxjobs}}
+wakeupperiod={{arexwakeupperiod}}
+defaultttl={{defaultttl}}
+
+#http://www.nordugrid.org/arc/arc6/admins/reference.html#statecallout
+#statecallout={{statecallout}}
+
+mail={{adminMailAddr}}
+
+[arex/data-staging]
+arexmaxtransfertries={{maxtransfertries}}
+
+[arex/cache]
+cachedir={{arc_frontend_cachedir}}
+
+[arex/cache/cleaner]
+cachesize={{cachesize}}
+cachelifetime={{cachelifetime}}
+
+[arex/jura]
+vomsless_vo=fgi.csc.fi
+
+[arex/jura/archiving]
+archivedir=/var/spool/nordugrid/jura
+
+[arex/jura/apel:ngi]
+targeturl=https://mq.cro-ngi.hr:6162
+gocdb_name={{gocDBName}}
+urbatchsize=100
+
+[arex/jura/sgas:csc]
+targeturl=https://pulse.fgi.csc.fi:6143/sgas
+# needs probably something more here
+# had previously:
+# jobreport_options="urbatch:100,archiving:/var/spool/nordugrid/jura,topic:/queue/global.accounting.cpu.central,gocdb_name:CSC,benchmark_type:HEPSPEC,benchmark_value:15.8,benchmark_description:HS06,use_ssl:true,vomsless_vo:fgi.csc.fi"
+
+
+[gridftpd]
+loglevel=5
+allowencryption=yes
+globus_tcp_port_range={{globus_tcp_port_range}}
+globus_udp_port_range={{globus_udp_port_range}}
+
+[gridftpd/jobs]
+allownew=yes
+allowaccess=allusers
+
+[infosys]
+timelimit=1800
+loglevel=2
+
+[infosys/ldap]
+
+[infosys/glue1]
+resource_location={{resource_location}}
+resource_latitude={{resource_latitude}}
+resource_longitude={{resource_longitude}}
+cpu_scaling_reference_si00={{arc_frontend_si00}}
+processor_other_description={{arc_frontend_processor_other_description}}
+glue_site_web={{instSiteURL}}
+glue_site_unique_id={{gocDBName}}
+
+[infosys/glue2]
+admindomain_distributed=no
+admindomain_description={{gocDBName}} grid resources
+admindomain_www={{instSiteURL}}
+admindomain_owner={{adminMailAddr}}
+
+
+[infosys/glue2/ldap]
+
+[infosys/nordugrid]
+
+[infosys/cluster]
+alias={{siteName}} (FGCI ARC6)
+comment=FGCI cluster
+cluster_location={{resource_location}}
+cluster_owner={{gocDBName}}
+advertisedvo={{voName}}
+advertisedvo=ops
+nodeaccess=outbound
+clustersupport={{adminMailAddr}}
+architecture=adotf
+opsys=CentOS
+nodecpu={{arc_frontend_cluster_nodecpu}}
+
+arc_frontend_queue_grid: |
+ [queue/grid]
+ comment=Grid queue
+ 
+ benchmark="SPECFP2000 {{arc_frontend_sfp}}"
+ benchmark="SPECINT2000  {{arc_frontend_si00}}"
+ benchmark="HEPSPEC2006 {{arc_frontend_hs06}}"
+
+
