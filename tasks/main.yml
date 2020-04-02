@@ -5,7 +5,7 @@
 #  template: src=nordugrid.repo.j2 dest=/etc/yum.repos.d/nordugrid.repo owner=root mode=0644 
 #
 - name: install nordugrid repo
-  yum: https://download.nordugrid.org/packages/nordugrid-release/releases/6/centos/el7/x86_64/nordugrid-release-6-1.el7.noarch.rpm
+  yum: pkg=https://download.nordugrid.org/packages/nordugrid-release/releases/6/centos/el7/x86_64/nordugrid-release-6-1.el7.noarch.rpm
 
 - name: install nordugrid rpm key
   rpm_key: key=http://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6 state=present
