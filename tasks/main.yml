@@ -224,7 +224,7 @@
 - name: Disable specific ARC6 frontend services if configured
   service: name={{ item }} enabled=no
   with_items: "{{ arc_frontend_disabled_services | default({}) }}"
-  when: arc_frontend_disabled_services.0 != ""
+  when: arc_frontend_disabled_services is defined
 
 - name: Create cron job that copies runtime apps from CVMFS
   cron: name="ansible-role-arc-frontend-6 copy runtime" minute=0 hour=6
