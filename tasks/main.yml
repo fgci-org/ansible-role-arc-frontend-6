@@ -4,11 +4,19 @@
 #- name: copy nordugrid.repo file
 #  template: src=nordugrid.repo.j2 dest=/etc/yum.repos.d/nordugrid.repo owner=root mode=0644 
 #
+- name: Remove ARC5 packages
+  yum: name={{arc5_packages}} state=absent
+
+- name: Remove ARC5 key
+  rpm_key:
+    state: absent
+    key: 41c00d89
+
 - name: install nordugrid repo
   yum: pkg=https://download.nordugrid.org/packages/nordugrid-release/releases/6/centos/el7/x86_64/nordugrid-release-6-1.el7.noarch.rpm
 
 - name: install nordugrid rpm key
-  rpm_key: key=http://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6 state=present
+  rpm_key: key=https://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6 state=present
 
 - name: update all the things
   yum: name=* state=latest
