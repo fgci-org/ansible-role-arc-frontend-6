@@ -3,7 +3,7 @@
 
 arc_frontend_release: "6"
 
-arc_frontend_packages-6:
+arc_frontend_packages:
  - nordugrid-arc
  - nordugrid-arc-archery-manage
  - nordugrid-arc-arex
