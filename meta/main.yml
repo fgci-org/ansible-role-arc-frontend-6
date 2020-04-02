@@ -1,0 +1,29 @@
+---
+galaxy_info:
+  author: Ville Salmela
+  description:  Installs and configures slurm on a cluster
+  company: CSC - IT Center for Science Ltd.
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+  - name: EL
+    versions:
+    - all
+  #  - 5
+  #  - 6
+  #  - 7
+  #- name: Ubuntu
+  #  versions:
+  #  - all
+  #- name: Debian
+  #  versions:
+  #  - all
+  #  - wheezy
+  #
+  galaxy_tags:
+   - clustering
+   - system
+   - batch
+   - hpc
+   - slurm
+dependencies: []
