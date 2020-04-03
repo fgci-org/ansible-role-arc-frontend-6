@@ -10,9 +10,12 @@ voms = ops * * *
 [authgroup:fgi]
 voms = fgi.csc.fi * * *
 
+[authgroup:tester]
+
 [authgroup:allusers]
 authgroup=ops
 authgroup=fgi
+authgroup=tester
 
 [mapping]
 map_to_pool= ops /etc/grid-security/opspool
@@ -69,6 +72,10 @@ targeturl=https://pulse.fgi.csc.fi:6143/sgas
 # had previously:
 # jobreport_options="urbatch:100,archiving:/var/spool/nordugrid/jura,topic:/queue/global.accounting.cpu.central,gocdb_name:CSC,benchmark_type:HEPSPEC,benchmark_value:15.8,benchmark_description:HS06,use_ssl:true,vomsless_vo:fgi.csc.fi"
 
+[arex/ws]
+[arex/ws/jobs]
+allowaccess=allusers
+allownew=yes
 
 [gridftpd]
 loglevel=5
