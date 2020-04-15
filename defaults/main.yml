@@ -25,7 +25,7 @@ arc_frontend_disabled_services:
 # Update NIS on install
 arc_frontend_nis: false
 
-# # Create Slurm Accounts | This only works if init_griduser_accts is set as true as well, see bellow |
+# # Create Slurm Accounts | This only works if init_griduser_accts is set as true as well, see below |
 add_slurm_accts: false
 
 # # Create Grid user accounts, homes and groups 
@@ -61,6 +61,7 @@ arexmaxtransfertries: 10
 
 unixgroup_dir_ops: "/etc/grid-security/opspool"
 unixgroup_dir_fgi: "/etc/grid-security/fgipool"
+unixgroup_dir_arctest: "/etc/grid-security/arctestpool"
 
 group_name_ops: "ops"
 group_name_fgi: "fgi"
