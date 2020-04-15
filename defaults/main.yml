@@ -89,8 +89,6 @@ arc_frontend_fairshare:
 arc_frontend_queue_grid: |
  [queue:grid]
  comment=Grid queue
- osname=CentOS
- osversion=7
 
  benchmark=SPECFP2000 {{arc_frontend_sfp}}
  benchmark=SPECINT2000  {{arc_frontend_si00}}
