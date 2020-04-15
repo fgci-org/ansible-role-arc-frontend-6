@@ -1,5 +1,5 @@
 ---
-# tasks file for ansible-role-arc-frontend
+# tasks file for ansible-role-arc-frontend-6
 
 #- name: copy nordugrid.repo file
 #  template: src=nordugrid.repo.j2 dest=/etc/yum.repos.d/nordugrid.repo owner=root mode=0644 
@@ -60,12 +60,12 @@
 
 - name: Populate ops pool file
   lineinfile: dest="{{ unixgroup_dir_ops }}/pool" line={{ item }} create=yes state=present
-  with_sequence: start=0 end={{ ops_acct_nr }} format=ops%03d
+  with_sequence: start=0 end={{ ops_acct_nr }} format={{group_name_ops}}%03d
   when: init_griduser_accts|bool
 
 - name: Populate fgi pool file
   lineinfile: dest="{{ unixgroup_dir_fgi }}/pool" line={{ item }} create=yes state=present
-  with_sequence: start=0 end={{ fgi_acct_nr }} format=fgi%03d
+  with_sequence: start=0 end={{ fgi_acct_nr }} format={{group_name_fgi}}%03d
   when: init_griduser_accts|bool
 
 - name: Create UnixGroup for FGI dir 
@@ -81,23 +81,23 @@
 
 
 - name: Create gridops group
-  group: name=ops state=present
+  group: name={{group_name_ops}} state=present
   delegate_to: install
   when: init_griduser_accts|bool
 
 - name: Create gridfgi group
-  group: name=fgi state=present
+  group: name={{group_name_fgi}} state=present
   delegate_to: install
   when: init_griduser_accts|bool
 
 # Ops users do not need write access for home
 - name: Create OPS home dir 
-  file: path="{{arc_frontend_griddir}}/ops" state=directory owner=root mode=0755
+  file: path="{{arc_frontend_griddir}}/{{group_name_ops}}" state=directory owner=root mode=0755
   when: init_griduser_accts|bool
 
 # Fgi users do not need write access for home
 - name: Create FGI home dir 
-  file: path="{{arc_frontend_griddir}}/fgi" state=directory owner=root mode=0755
+  file: path="{{arc_frontend_griddir}}/{{group_name_fgi}}" state=directory owner=root mode=0755
   when: init_griduser_accts|bool
 
 - name: Create generic gridnull user
@@ -117,14 +117,14 @@
   when: init_griduser_accts|bool
 
 - name: Create Grid users for OPS
-  user: name={{item}} state=present home="{{arc_frontend_griddir}}/ops" groups=ops createhome=no
-  with_sequence: start=0 end={{ops_acct_nr}} format=ops%03d
+  user: name={{item}} state=present home="{{arc_frontend_griddir}}/{{group_name_ops}}" groups={{group_name_ops}} createhome=no
+  with_sequence: start=0 end={{ops_acct_nr}} format={{group_name_ops}}%03d
   delegate_to: install
   when: init_griduser_accts|bool
 
 - name: Create Grid users for FGI
-  user: name={{item}} state=present home="{{arc_frontend_griddir}}/fgi" groups=fgi createhome=no
-  with_sequence: start=0 end={{fgi_acct_nr}} format=fgi%03d
+  user: name={{item}} state=present home="{{arc_frontend_griddir}}/{{group_name_fgi}}" groups={{group_name_fgi}} createhome=no
+  with_sequence: start=0 end={{fgi_acct_nr}} format={{group_name_fgi}}%03d
   delegate_to: install
   when: init_griduser_accts|bool
 
@@ -134,27 +134,27 @@
   when: arc_frontend_nis|bool
 
 - name: Create Slurm user account for OPS 1/2
-  command: /usr/bin/sacctmgr -i add account ops
+  command: /usr/bin/sacctmgr -i add account {{group_name_ops}}
   delegate_to: install
   when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for OPS 2/2
-  command: /usr/bin/sacctmgr -i add user name={{ item }} account=ops
-  with_sequence: start=0 end={{ops_acct_nr}} format=ops%03d
+  command: /usr/bin/sacctmgr -i add user name={{ item }} account={{group_name_ops}}
+  with_sequence: start=0 end={{ops_acct_nr}} format={{group_name_ops}}%03d
   delegate_to: install
   when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for FGI 1/2
-  command: /usr/bin/sacctmgr -i add account fgi
+  command: /usr/bin/sacctmgr -i add account {{group_name_fgi}}
   delegate_to: install
   when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for FGI 2/2
-  command: /usr/bin/sacctmgr -i add user name={{item}} account=fgi
-  with_sequence: start=0 end={{fgi_acct_nr}} format=fgi%03d
+  command: /usr/bin/sacctmgr -i add user name={{item}} account={{group_name_fgi}}
+  with_sequence: start=0 end={{fgi_acct_nr}} format={{group_name_fgi}}%03d
   delegate_to: install
   when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes

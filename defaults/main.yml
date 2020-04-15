@@ -62,6 +62,9 @@ arexmaxtransfertries: 10
 unixgroup_dir_ops: "/etc/grid-security/opspool"
 unixgroup_dir_fgi: "/etc/grid-security/fgipool"
 
+group_name_ops: "ops"
+group_name_fgi: "fgi"
+
 ops_acct_nr: 40
 fgi_acct_nr: 200
 
@@ -79,8 +82,8 @@ arc_frontend_cluster_nodecpu: "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz"
 arc_frontend_enable_fairshare: True
 arc_frontend_fairshare:
         - { group: 'local', share: '80000' }
-        - { group: 'fgi', share: '20000' }
-        - { group: 'ops', share: '100000' }
+        - { group: '{{group_name_fgi}}', share: '20000' }
+        - { group: '{{group_name_ops}}', share: '100000' }
 
 arc_frontend_queue_grid: |
  [queue:grid]
