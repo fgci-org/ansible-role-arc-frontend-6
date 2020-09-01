@@ -239,6 +239,16 @@
 - name: Template arc.conf file
   template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
 
+- name: Download voms data from voms.fgi.csc.fi
+  shell: arcctl deploy voms-lsc fgi.csc.fi --voms vomss://voms.fgi.csc.fi:8443/voms/fgi.csc.fi
+  args:
+    executable: /bin/bash
+
+- name: Download voms data from voms2.cern.ch
+  shell: arcctl deploy voms-lsc ops --voms vomss://voms2.cern.ch:8443/voms/ops
+  args:
+    executable: /bin/bash
+
 - name: Stop ARC6 services
   service:
     name: "{{item}}"
