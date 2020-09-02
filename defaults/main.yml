@@ -62,7 +62,6 @@ arexmaxtransfertries: 10
 
 unixgroup_dir_ops: "/etc/grid-security/opspool"
 unixgroup_dir_fgi: "/etc/grid-security/fgipool"
-unixgroup_dir_arctest: "/etc/grid-security/arctestpool"
 
 group_name_ops: "ops"
 group_name_fgi: "fgi"

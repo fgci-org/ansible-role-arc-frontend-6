@@ -72,17 +72,6 @@
   with_sequence: start=0 end={{ fgi_acct_nr }} format={{group_name_fgi}}%03d
   when: init_griduser_accts|bool
 
-- name: Create arctest pool directory for account mapping
-  file: path={{unixgroup_dir_arctest}} state=directory owner=root mode=0755
-  when: init_griduser_accts|bool
-
-- name: Populate arctest pool file
-  lineinfile: dest="{{unixgroup_dir_arctest}}/pool" line={{ item }} create=yes state=present
-  with_sequence: start=1 end=3 format=arctest%03d
-  when: init_griduser_accts|bool
-
-
-
 
 
 
@@ -98,11 +87,6 @@
   delegate_to: install
   when: init_griduser_accts|bool
 
-- name: Create arctest group
-  group: name=arctest state=present
-  delegate_to: install
-  when: init_griduser_accts|bool
-
 # Ops users do not need write access for home
 - name: Create OPS home dir 
   file: path="{{arc_frontend_griddir}}/{{group_name_ops}}" state=directory owner=root mode=0755
@@ -111,11 +95,6 @@
 # Fgi users do not need write access for home
 - name: Create FGI home dir 
   file: path="{{arc_frontend_griddir}}/{{group_name_fgi}}" state=directory owner=root mode=0755
-  when: init_griduser_accts|bool
-
-# No homedir write access for arctest user because others don't have either
-- name: Create arctest home dir
-  file: path="{{arc_frontend_griddir}}/arctest" state=directory owner=root mode=0755
   when: init_griduser_accts|bool
 
 - name: Create generic grid user
@@ -132,12 +111,6 @@
 - name: Create fgi users
   user: name={{item}} state=present home="{{arc_frontend_griddir}}/{{group_name_fgi}}" groups={{group_name_fgi}} createhome=no
   with_sequence: start=0 end={{fgi_acct_nr}} format={{group_name_fgi}}%03d
-  delegate_to: install
-  when: init_griduser_accts|bool
-
-- name: Create arctest users
-  user: name={{item}} state=present home="{{arc_frontend_griddir}}/arctest" groups=arctest createhome=no
-  with_sequence: start=1 end=3 format=arctest%03d
   delegate_to: install
   when: init_griduser_accts|bool
 
@@ -171,20 +144,6 @@
   delegate_to: install
   when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
-
-- name: Create Slurm user account for arctest if add_slurm_accts=true and init_griduser_accts=true 1/2
-  command: /usr/bin/sacctmgr -i add account arctest
-  delegate_to: install
-  when: add_slurm_accts|bool and init_griduser_accts|bool
-  ignore_errors: yes
-
-- name: Create Slurm user account for arctest if add_slurm_accts=true and init_griduser_accts=true 2/2
-  command: /usr/bin/sacctmgr -i add user name={{item}} account=arctest
-  with_sequence: start=1 end=2 format=arctest%03d
-  delegate_to: install
-  when: add_slurm_accts|bool and init_griduser_accts|bool
-  ignore_errors: yes
-
 
 
 
