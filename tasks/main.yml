@@ -208,6 +208,38 @@
   args:
     executable: /bin/bash
 
+- name: Enable run time environments
+  shell: |
+    arcctl rte enable \
+    APPS/BIO/BIOCONDA \
+    APPS/BIO/BLAST+-2.2.31 \
+    APPS/BIO/BLAST+-2.3.0 \
+    APPS/BIO/BLAST+-2.6.0 \
+    APPS/BIO/INTERPROSCAN-5.22-61.0 \
+    APPS/BIO/SHRIMP-2.2.3 \
+    APPS/CHEM/AMBER-16 \
+    APPS/CHEM/GROMACS-2016.4 \
+    APPS/CHEM/GROMACS-5.1.4 \
+    APPS/CHEM/NAMD-2.12 \
+    APPS/CHEM/ORCA-3.0.3 \
+    APPS/MATH/MCR-R2015A \
+    APPS/MATH/MCR-R2017A \
+    APPS/PHYS/CP2K-2.6.1 \
+    APPS/PHYS/GEANT4-9.5.1 \
+    APPS/PHYS/GPAW-1.1.0 \
+    APPS/PHYS/LAMMPS-17Nov2016 \
+    APPS/PHYS/OPENFOAM-5.0 \
+    ENV/ANACONDA2 \
+    ENV/FGCI \
+    ENV/FOURNODE \
+    ENV/NUMPY-1.8.2 \
+    ENV/ONENODE \
+    ENV/PROXY \
+    ENV/PYTHON-2.7 \
+    ENV/SCIPY-0.13 \
+    ENV/TWONODE \
+    SAM/GETCA
+
 - name: Stop ARC6 services
   service:
     name: "{{item}}"
