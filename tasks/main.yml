@@ -1,9 +1,6 @@
 ---
 # tasks file for ansible-role-arc-frontend-6
 
-#- name: copy nordugrid.repo file
-#  template: src=nordugrid.repo.j2 dest=/etc/yum.repos.d/nordugrid.repo owner=root mode=0644 
-#
 - name: Remove ARC5 packages
   yum: name={{arc5_packages}} state=absent
 
@@ -239,6 +236,14 @@
     ENV/SCIPY-0.13 \
     ENV/TWONODE \
     SAM/GETCA
+
+- name: Remove nordugrid-arc-nordugridmap package
+  yum: name=nordugrid-arc-nordugridmap state=absent
+
+- name: Remove /etc/grid-security/grid-mapfile
+  file:
+    path: /etc/grid-security/grid-mapfile
+    state: absent
 
 - name: Stop ARC6 services
   service:
