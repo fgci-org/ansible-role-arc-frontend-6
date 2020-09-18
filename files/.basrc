@@ -1,0 +1,3 @@
+# .bashrc
+
+unset SLURM_EXPORT_ENV
