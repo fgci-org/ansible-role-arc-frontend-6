@@ -94,11 +94,11 @@
   file: path="{{arc_frontend_griddir}}/{{group_name_fgi}}" state=directory owner=root mode=0755
   when: init_griduser_accts|bool
 
-- name: Copy ops users .bashrc file to homedir to unset SLURM_EXPORT_ENV
-  copy: src=bashrc dest={{arc_frontend_griddir}}/{{group_name_ops}}/.bashrc owner=root mode=0644
+- name: Copy ops users .bash_profile file to homedir to unset SLURM_EXPORT_ENV
+  copy: src=bash_profile dest={{arc_frontend_griddir}}/{{group_name_ops}}/.bash_profile owner=root mode=0644
 
-- name: Copy fgi users .bashrc file to homedir to unset SLURM_EXPORT_ENV
-  copy: src=bashrc dest={{arc_frontend_griddir}}/{{group_name_fgi}}/.bashrc owner=root mode=0644
+- name: Copy fgi users .bash_profile file to homedir to unset SLURM_EXPORT_ENV
+  copy: src=bash_profile dest={{arc_frontend_griddir}}/{{group_name_fgi}}/.bash_profile owner=root mode=0644
 
 - name: Create generic grid user
   user: name=grid state=present home="{{arc_frontend_griddir}}/grid"

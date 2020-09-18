@@ -1,0 +1,4 @@
+# .bash_profile
+
+export -n SLURM_EXPORT_ENV
+
