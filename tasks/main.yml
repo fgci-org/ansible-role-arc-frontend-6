@@ -174,25 +174,14 @@
 - name: copy host certificate key file
   copy: src=files/certificates/hostkey.pem dest=/etc/grid-security/ owner=root mode=0400
   when: hostkey.stat.exists
-  notify: restart_arc_frontend_services
 
 - name: copy host certificate file
   copy: src=files/certificates/hostcert.pem dest=/etc/grid-security/ owner=root mode=0644
   when: hostcert.stat.exists
-  notify: restart_arc_frontend_services
 
 - name: verify certificate and hostkey
   script: files/verify_certificate
   changed_when: False
-
-
-
-
-
-
-
-
-
 
 
 
