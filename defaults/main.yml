@@ -94,16 +94,16 @@ arc_frontend_queue_grid: |
  benchmark=HEPSPEC2006 {{arc_frontend_hs06}}
 
 arc5_packages:
- - nordugrid-arc-arex-5.4.4-2.el7.x86_64
- - nordugrid-arc-gridftpd-5.4.4-2.el7.x86_64
- - nordugrid-arc-gridmap-utils-5.4.4-2.el7.noarch
- - nordugrid-arc-ldap-infosys-5.4.4-2.el7.noarch
- - nordugrid-arc-aris-5.4.4-2.el7.noarch
- - nordugrid-arc-arex-5.4.4-2.el7.x86_64
- - nordugrid-arc-hed-5.4.4-2.el7.x86_64
- - nordugrid-arc-plugins-globus-5.4.4-2.el7.x86_64
- - nordugrid-arc-client-5.4.4-2.el7.x86_64
- - python2-nordugrid-arc-5.4.4-2.el7.x86_64
- - nordugrid-arc-plugins-needed-5.4.4-2.el7.x86_64
+ - nordugrid-arc-arex-5.4.4
+ - nordugrid-arc-gridftpd-5.4.4
+ - nordugrid-arc-gridmap-utils-5.4.4
+ - nordugrid-arc-ldap-infosys-5.4.4
+ - nordugrid-arc-aris-5.4.4
+ - nordugrid-arc-arex-5.4.4
+ - nordugrid-arc-hed-5.4.4
+ - nordugrid-arc-plugins-globus-5.4.4
+ - nordugrid-arc-client-5.4.4
+ - python2-nordugrid-arc-5.4.4
+ - nordugrid-arc-plugins-needed-5.4.4
  - nordugrid-release-15.03-1.el7.centos.noarch
- - nordugrid-arc-5.4.4-2.el7.x86_64
+ - nordugrid-arc-5.4.4
