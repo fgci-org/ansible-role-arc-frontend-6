@@ -13,6 +13,7 @@ arc_frontend_packages:
  - python2-nordugrid-arc
  - python36-nordugrid-arc
  - nordugrid-arc-plugins-globus
+ - nordugrid-arc-plugins-xrootd
  - fetch-crl
 
 arc_frontend_services:
