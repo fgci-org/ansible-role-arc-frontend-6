@@ -190,13 +190,31 @@
 - name: Template arc.conf file
   template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
 
-- name: Download voms data from voms.fgi.csc.fi
+- name: Remove fgi-lsc-files package
+  yum: name=fgi-lsc-files state=absent
+
+- name: Download voms lsc files from voms.fgi.csc.fi
   shell: arcctl deploy voms-lsc fgi.csc.fi --voms vomss://voms.fgi.csc.fi:8443/voms/fgi.csc.fi
   args:
     executable: /bin/bash
 
 - name: Download voms data from voms2.cern.ch
-  shell: arcctl deploy voms-lsc ops --voms vomss://voms2.cern.ch:8443/voms/ops
+  shell: "{{ item }}"
+  with_items:
+   - arcctl deploy voms-lsc alice --voms vomss://voms2.cern.ch:8443/voms/alice
+   - arcctl deploy voms-lsc atlas --voms vomss://voms2.cern.ch:8443/voms/atlas
+   - arcctl deploy voms-lsc cms --voms vomss://voms2.cern.ch:8443/voms/cms
+   - arcctl deploy voms-lsc ops --voms vomss://voms2.cern.ch:8443/voms/ops
+  args:
+    executable: /bin/bash
+
+- name: Download voms data from lcg-voms2.cern.ch
+  shell: "{{ item }}"
+  with_items:
+   - arcctl deploy voms-lsc alice --voms vomss://lcg-voms2.cern.ch:8443/voms/alice
+   - arcctl deploy voms-lsc atlas --voms vomss://lcg-voms2.cern.ch:8443/voms/atlas
+   - arcctl deploy voms-lsc cms --voms vomss://lcg-voms2.cern.ch:8443/voms/cms
+   - arcctl deploy voms-lsc ops --voms vomss://lcg-voms2.cern.ch:8443/voms/ops
   args:
     executable: /bin/bash
 
