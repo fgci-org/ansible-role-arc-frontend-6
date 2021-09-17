@@ -18,6 +18,7 @@ arc_frontend_packages:
 
 arc_frontend_services:
  - arc-arex
+ - arc-arex-ws
  - arc-gridftpd
  - arc-infosys-ldap
 
